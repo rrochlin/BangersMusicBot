@@ -113,9 +113,11 @@ class music_cog(commands.Cog):
             # play next in the queue
             await self.play_music(ctx)
 
-    @commands.command(name="stop", help="Pause music")
+    @commands.command(name="stop", help="Stop music")
     async def stop(self, ctx):
-        self.vc[server].stop()
+        server = str(ctx.guild.name)
+        if server in self.vc and self.vc[server]:
+            self.vc[server].stop()
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
