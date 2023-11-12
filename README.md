@@ -1,2 +1,2 @@
 # BangersMusicBot
-Music Bot for the Boys
+Music Bot JUST for the Boys AND NO ONE ELSE!

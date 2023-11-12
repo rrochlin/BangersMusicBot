@@ -1,0 +1,4 @@
+discord
+flask
+youtube-dl
+normalizer
