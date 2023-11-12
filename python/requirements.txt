@@ -1,4 +1,4 @@
+PyNaCl
 discord
-flask
 youtube-dl
 normalizer
