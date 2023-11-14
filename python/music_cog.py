@@ -29,7 +29,8 @@ class music_cog(commands.Cog):
             except Exception as e:
                 print(e)
                 return False
-        return {"source": info["formats"][0]["url"], "title": info["title"]}
+            source = next((item['url'] for item in info["formats"] if 'asr' in item.keys()), None)
+        return {"source": source, "title": info["title"]}
 
     def play_next(self, server):
         if server in self.music_queue and len(self.music_queue[server]) > 0:
