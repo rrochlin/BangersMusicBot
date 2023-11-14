@@ -6,6 +6,9 @@ __pycache__/
 #config file
 *.config
 
+# testing file
+test.ipynb
+
 # C extensions
 *.so
 

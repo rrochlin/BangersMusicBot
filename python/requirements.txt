@@ -1,4 +1,4 @@
 PyNaCl
 discord
-youtube-dl
+yt-dlp
 normalizer
