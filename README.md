@@ -8,3 +8,7 @@ The system you use will need to have mariaDB installed then you need to download
 * `sudo apt-get update -y`
 * `sudo apt-get install -y libmariadb-dev`
 * `pip3 install mariadb==1.0.11`
+
+
+## managing services
+sudo systemctl restart BangersMusicService.service
