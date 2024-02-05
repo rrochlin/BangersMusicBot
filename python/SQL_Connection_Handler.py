@@ -24,8 +24,11 @@ class SQL_Connection_Handler:
             f"INSERT INTO MusicDB.history (timestamp, song_url, user, stop_or_skip) "
             f"VALUES (NOW(), '{song_url}', '{user}', False);"
         )
-        self.cursor.execute(sql)
-        self.conn.commit()
+        try:
+            self.cursor.execute(sql)
+            self.conn.commit()
+        except Exception as e:
+            print(e)
 
     def song_skipped(self, user: str = "default") -> None:
         sql = (
@@ -33,5 +36,8 @@ class SQL_Connection_Handler:
             f"SET stop_or_skip = True, stopped_skipped_by = '{user}' "
             f"WHERE timestamp=(SELECT MAX(timestamp) FROM MusicDB.history);"
         )
-        self.cursor.execute(sql)
-        self.conn.commit()
+        try:
+            self.cursor.execute(sql)
+            self.conn.commit()
+        except Exception as e:
+            print(e)
