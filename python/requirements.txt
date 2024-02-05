@@ -2,3 +2,4 @@ PyNaCl
 discord
 yt-dlp
 normalizer
+mariadb
