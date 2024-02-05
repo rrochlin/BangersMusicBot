@@ -2,6 +2,7 @@ import mariadb
 import configparser
 import os
 import logging
+import sys
 
 
 class SQL_Connection_Handler:
@@ -19,6 +20,16 @@ class SQL_Connection_Handler:
         )
         self.cursor = self.conn.cursor()
 
+        root = logging.getLogger()
+        root.setLevel(logging.DEBUG)
+
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        root.addHandler(handler)
+        self.logger = root
+
     def song_played(self, song_url: str, user: str = "default") -> None:
         # record the song and user
         sql = (
@@ -29,7 +40,7 @@ class SQL_Connection_Handler:
             self.cursor.execute(sql)
             self.conn.commit()
         except Exception as e:
-            logging.error(e)
+            self.logger.error(e)
 
     def song_skipped(self, user: str = "default") -> None:
         sql = (
@@ -41,4 +52,4 @@ class SQL_Connection_Handler:
             self.cursor.execute(sql)
             self.conn.commit()
         except Exception as e:
-            logging.error(e)
+            self.logger.error(e)
