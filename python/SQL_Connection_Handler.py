@@ -4,8 +4,6 @@ import os
 
 
 class SQL_Connection_Handler:
-    conn: mariadb.Connection
-    cursor: mariadb.Cursor
 
     def __init__(self):
         secrets_path = os.path.join(
