@@ -25,7 +25,7 @@ class SQL_Connection_Handler:
             f"VALUES (NOW(), '{song_url}', '{user}', False);"
         )
         self.cursor.execute(sql)
-        self.cursor.commit()
+        self.conn.commit()
 
     def song_skipped(self, user: str = "default") -> None:
         sql = (
@@ -34,4 +34,4 @@ class SQL_Connection_Handler:
             f"WHERE timestamp=(SELECT MAX(timestamp) FROM MusicDB.history);"
         )
         self.cursor.execute(sql)
-        self.cursor.commit()
+        self.conn.commit()
