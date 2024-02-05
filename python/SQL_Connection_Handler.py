@@ -40,6 +40,7 @@ class SQL_Connection_Handler:
             self.cursor.execute(sql)
             self.conn.commit()
         except Exception as e:
+            self.logger.error(sql)
             self.logger.error(e)
 
     def song_skipped(self, user: str = "default") -> None:
@@ -52,4 +53,5 @@ class SQL_Connection_Handler:
             self.cursor.execute(sql)
             self.conn.commit()
         except Exception as e:
+            self.logger.error(sql)
             self.logger.error(e)
