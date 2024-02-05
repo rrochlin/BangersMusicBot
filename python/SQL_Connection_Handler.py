@@ -30,11 +30,11 @@ class SQL_Connection_Handler:
         root.addHandler(handler)
         self.logger = root
 
-    def song_played(self, song_url: str, user: str = "default") -> None:
+    def song_played(self, song_title: str, song_url: str, user: str = "default") -> None:
         # record the song and user
         sql = (
-            f"INSERT INTO MusicDB.history (timestamp, song_url, user, stop_or_skip) "
-            f"VALUES (NOW(), '{song_url}', '{user}', False);"
+            f"INSERT INTO MusicDB.history (timestamp, song_title, song_url, user, stop_or_skip) "
+            f"VALUES (NOW(), '{song_title}', '{song_url}', '{user}', False);"
         )
         try:
             self.cursor.execute(sql)

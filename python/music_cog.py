@@ -87,7 +87,7 @@ class music_cog(commands.Cog):
                 )
             else:
                 await ctx.send("Song added to the queue")
-                self.sql_handler.song_played(song_url=song["title"], user=ctx.author.id)
+                self.sql_handler.song_played(song_title=song["title"], song_url=song["source"], user=ctx.author.id)
                 if server not in self.music_queue:
                     self.music_queue[server] = []
                 self.music_queue[server].append([song, voice_channel])
