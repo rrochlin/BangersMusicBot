@@ -3,7 +3,6 @@ Description=Ticketing bot for the Bangers Disc
 After=network-online.target BangersTicketingBot.service
 
 [Service]
-ExecStartPre=/bin/sleep 20
 ExecStart=/bin/bash -c '/home/raspi/Documents/BangersMusicBot/python/run_bot.sh > /home/raspi/logs/BangersMusicBot.log 2>&1'
 
 [Install]
