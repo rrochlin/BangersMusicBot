@@ -1,6 +1,7 @@
 import mariadb
 import configparser
 import os
+import logging
 
 
 class SQL_Connection_Handler:
@@ -28,7 +29,7 @@ class SQL_Connection_Handler:
             self.cursor.execute(sql)
             self.conn.commit()
         except Exception as e:
-            print(e)
+            logging.error(e)
 
     def song_skipped(self, user: str = "default") -> None:
         sql = (
@@ -40,4 +41,4 @@ class SQL_Connection_Handler:
             self.cursor.execute(sql)
             self.conn.commit()
         except Exception as e:
-            print(e)
+            logging.error(e)

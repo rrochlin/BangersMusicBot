@@ -19,5 +19,4 @@ if __name__ == "__main__":
     config = ConfigParser()
     config.read("Web.config")
     TOKEN = config["SECRETS"]["TOKEN"]
-    print(TOKEN)
     bot.run(TOKEN)
