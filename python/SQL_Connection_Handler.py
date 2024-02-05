@@ -9,7 +9,8 @@ class SQL_Connection_Handler:
         secrets_path = os.path.join(
             os.path.dirname(os.path.realpath(__file__)), "Web.config"
         )
-        config = configparser.ConfigParser(secrets_path)
+        config = configparser.ConfigParser()
+        config.read(secrets_path)
         self.conn = mariadb.connect(
             user=config["sql_username"],
             password=config["sql_password"],
