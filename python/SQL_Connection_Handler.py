@@ -12,8 +12,8 @@ class SQL_Connection_Handler:
         config = configparser.ConfigParser()
         config.read(secrets_path)
         self.conn = mariadb.connect(
-            user=config["sql_username"],
-            password=config["sql_password"],
+            user=config["SECRETS"]["sql_username"],
+            password=config["SECRETS"]["sql_password"],
             host="localhost",
         )
         self.cursor = self.conn.cursor()
@@ -22,14 +22,14 @@ class SQL_Connection_Handler:
         # record the song and user
         sql = (
             f"INSERT INTO MusicDB.history (timestamp, song_url, user, stop_or_skip) "
-            f"VALUES (NOW(), {song_url}, {user}, False);"
+            f"VALUES (NOW(), '{song_url}', '{user}', False);"
         )
         self.cursor.execute(sql)
 
     def song_skipped(self, user: str = "default") -> None:
         sql = (
             f"UPDATE MusicDB.history "
-            f"SET stop_or_skip = True, stopped_skipped_by = {user} "
+            f"SET stop_or_skip = True, stopped_skipped_by = '{user}' "
             f"WHERE timestamp=(SELECT MAX(timestamp) FROM MusicDB.history)"
         )
         self.cursor.execute(sql)
