@@ -31,7 +31,7 @@ class SQL_Connection_Handler:
         sql = (
             f"UPDATE MusicDB.history "
             f"SET stop_or_skip = True, stopped_skipped_by = '{user}' "
-            f"WHERE timestamp=(SELECT MAX(timestamp) FROM MusicDB.history)"
+            f"WHERE timestamp=(SELECT MAX(timestamp) FROM MusicDB.history);"
         )
         self.cursor.execute(sql)
         self.cursor.commit()

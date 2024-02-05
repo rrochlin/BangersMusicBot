@@ -41,7 +41,6 @@ class music_cog(commands.Cog):
             m_url = self.music_queue[server][0][0]["source"]
             # remove the first element as you are currently playing it
             self.music_queue[server].pop(0)
-            self.sql_handler.song_played(m_url)
             self.vc[server].play(
                 discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
                 after=lambda e: self.play_next(server),
@@ -65,7 +64,6 @@ class music_cog(commands.Cog):
             else:
                 await self.vc[server].move_to(self.music_queue[server][0][1])
             current = self.music_queue[server].pop(0)
-            self.sql_handler.song_played(m_url)
             self.vc[server].play(
                 discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
                 after=lambda e: self.play_next(server),
@@ -89,6 +87,7 @@ class music_cog(commands.Cog):
                 )
             else:
                 await ctx.send("Song added to the queue")
+                self.sql_handler.song_played(song, ctx.author.id)
                 if server not in self.music_queue:
                     self.music_queue[server] = []
                 self.music_queue[server].append([song, voice_channel])
@@ -114,7 +113,7 @@ class music_cog(commands.Cog):
     async def skip(self, ctx):
         server = str(ctx.guild.name)
         if server in self.vc and self.vc[server]:
-            self.sql_handler.song_skipped()
+            self.sql_handler.song_skipped(ctx.author.id)
             self.vc[server].stop()
             # play next in the queue
             await self.play_music(ctx)
@@ -123,7 +122,7 @@ class music_cog(commands.Cog):
     async def stop(self, ctx):
         server = str(ctx.guild.name)
         if server in self.vc and self.vc[server]:
-            self.sql_handler.song_skipped()
+            self.sql_handler.song_skipped(ctx.author.id)
             self.vc[server].stop()
 
     @commands.Cog.listener()
