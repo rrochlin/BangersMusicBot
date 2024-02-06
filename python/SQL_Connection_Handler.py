@@ -18,6 +18,7 @@ class SQL_Connection_Handler:
             password=config["SECRETS"]["sql_password"],
             host="localhost",
         )
+        self.conn.auto_reconnect = True
         self.cursor = self.conn.cursor()
 
         root = logging.getLogger()
