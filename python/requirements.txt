@@ -3,3 +3,6 @@ discord
 yt-dlp
 normalizer
 mariadb
+psycopg2-binary
+sqlalchemy
+sqlalchemy-cockroachdb

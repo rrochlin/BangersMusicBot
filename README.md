@@ -12,3 +12,8 @@ The system you use will need to have mariaDB installed then you need to download
 
 ## managing services
 sudo systemctl restart BangersMusicService.service
+
+## configuring MariaDB to remote connections
+* [documentation](https://mariadb.com/kb/en/configuring-mariadb-for-remote-client-access/).
+* need to open port 3306
+* configure user account to allow conections from LAN

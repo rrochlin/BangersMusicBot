@@ -3,6 +3,8 @@ import discord
 from discord.ext import commands
 from yt_dlp import YoutubeDL
 from SQL_Connection_Handler import SQL_Connection_Handler
+from cdb_handler import cdb_handler
+from models import Song
 
 
 class music_cog(commands.Cog):
