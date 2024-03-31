@@ -7,6 +7,7 @@ from models import Song, Queue, User
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy_cockroachdb import run_transaction
 from sqlalchemy.orm.exc import NoResultFound
+from typing import List
 
 
 class cdb_handler:
@@ -41,6 +42,7 @@ class cdb_handler:
         root.addHandler(handler)
         self.logger = root
         self.current_song = None
+        self.__current_queue__ = None
 
     def song_played(self, song_title: str, song_url: str, user: str = "default") -> None:
         # record the song and user
@@ -59,26 +61,42 @@ class cdb_handler:
         self.logger.info("grabbing song from queue")
         run_transaction(sessionmaker(bind=self.engine), lambda s: self.__pop_song__(s))
 
-    def queue_song(self, song_title: str, song_url: str, thumbnail: str, user: str) -> None:
+    def queue_song(self, song_title: str, song_url: str, source: str, thumbnail: str, user: str) -> None:
         self.logger.info(f"adding song to queue: {song_title}")
         run_transaction(sessionmaker(bind=self.engine),
                         lambda s: self.__queue_song__(
-                            session=s, song_title=song_title, song_url=song_url, thumbnail=thumbnail, user=user))
+                            session=s, song_title=song_title, song_url=song_url, source=source, thumbnail=thumbnail, user=user))
+        
+    def fetch_queue(self) -> List[str]:
+        run_transaction(sessionmaker(bind=self.engine), lambda s: self.__fetch_queue__(s))
+        return self.__current_queue__
 
-    def __pop_song__(self, session: Session) -> Song:
-        next = session.query(Queue).order_by(Queue.id).first()
-        session.delete(next)
-        song = Song(title=next.title, url=next.url, thumbnail=next.thumbnail, createdById=next.createdById)
+    def __fetch_queue__(self, session: Session) -> None:
+        try:
+            current_q = session.query(Queue).all()
+            self.__current_queue__ = [q.title for q in current_q]
+        except NoResultFound:
+            self.__current_queue__ = None
+
+    def __pop_song__(self, session: Session) -> None:
+        # will raise NoResultFound if theres no songs in the queue
+        try:
+            popped = session.query(Queue).order_by(Queue.id).first()
+        except NoResultFound:
+            self.current_song = None
+            raise NoResultFound
+        session.delete(popped)
+        song = Song(title=popped.title, url=popped.url, source=popped.source, thumbnail=popped.thumbnail, createdById=popped.createdById)
         session.add(song)
-        self.current_song = Song(title=next.title, url=next.url, thumbnail=next.thumbnail, createdById=next.createdById)
+        self.current_song = Song(title=popped.title, url=popped.url, source=popped.source, thumbnail=popped.thumbnail, createdById=popped.createdById)
 
-    def __queue_song__(self, session: Session, song_title: str, song_url: str, thumbnail: str, user: str):
+    def __queue_song__(self, session: Session, song_title: str, song_url: str, source: str, thumbnail: str, user: str):
         try:
             user_id = self.__get_user__(session=session, username=user).id
         except Exception as e:
             self.logger.error(f"error finding user ID {e}")
             return
-        session.add(Queue(title=song_title, url=song_url, thumbnail=thumbnail, createdById=user_id))
+        session.add(Queue(title=song_title, url=song_url, source=source, thumbnail=thumbnail, createdById=user_id))
 
     def __get_user__(self, session: Session, username: str) -> str:
         try:
