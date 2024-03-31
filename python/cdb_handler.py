@@ -60,6 +60,7 @@ class cdb_handler:
     def pop_song(self) -> None:
         self.logger.info("grabbing song from queue")
         run_transaction(sessionmaker(bind=self.engine), lambda s: self.__pop_song__(s))
+        self.logger.info(f"next song is {self.current_song}")
 
     def queue_song(self, song_title: str, song_url: str, source: str, thumbnail: str, user: str) -> None:
         self.logger.info(f"adding song to queue: {song_title}")

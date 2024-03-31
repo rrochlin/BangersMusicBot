@@ -73,7 +73,7 @@ class music_cog(commands.Cog):
             await self.vc.move_to(ctx.author.voice.channel)
         self.vc.play(
             discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
-            after=lambda e: self.play_next(),
+            after=lambda _: self.play_next(),
         )
         await ctx.send(f"Now playing: {self.cdb.current_song.title}")
 
