@@ -66,10 +66,13 @@ class cdb_handler:
         run_transaction(sessionmaker(bind=self.engine),
                         lambda s: self.__queue_song__(
                             session=s, song_title=song_title, song_url=song_url, source=source, thumbnail=thumbnail, user=user))
-        
+
     def fetch_queue(self) -> List[str]:
         run_transaction(sessionmaker(bind=self.engine), lambda s: self.__fetch_queue__(s))
         return self.__current_queue__
+
+    def clear_queue(self) -> None:
+        pass
 
     def __fetch_queue__(self, session: Session) -> None:
         try:

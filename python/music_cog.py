@@ -112,7 +112,7 @@ class music_cog(commands.Cog):
             await self.play_music(ctx)
 
     @commands.command(name="stop", help="Stop music")
-    async def stop(self):
+    async def stop(self, ctx: commands.Context):
         if self.vc.is_connected():
             self.vc.stop()
 
