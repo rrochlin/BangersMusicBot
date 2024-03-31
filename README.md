@@ -17,3 +17,6 @@ sudo systemctl restart BangersMusicService.service
 * [documentation](https://mariadb.com/kb/en/configuring-mariadb-for-remote-client-access/).
 * need to open port 3306
 * configure user account to allow conections from LAN
+
+## Compatibility for raspi and cockroachDB
+* cockroachDB requires postgresql to work properly. run `sudo apt install postgresql`

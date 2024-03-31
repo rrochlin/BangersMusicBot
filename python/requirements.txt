@@ -4,5 +4,6 @@ yt-dlp
 normalizer
 mariadb
 psycopg2-binary
+psycopg2
 sqlalchemy
 sqlalchemy-cockroachdb

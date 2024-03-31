@@ -22,8 +22,8 @@ class cdb_handler:
             drivername="cockroachdb",
             username=config["SECRETS"]["cdb_username"],
             password=config["SECRETS"]["cdb_password"],
-            database="defaultdb",
-            host=config["SECRETS"]["host"],
+            database=f"{config['SECRETS']['cluster']}.defaultdb",
+            host=f"{config['SECRETS']['cluster']}.{config['SECRETS']['host']}",
             port="26257",
             query={"sslmode": "require"}
             )
