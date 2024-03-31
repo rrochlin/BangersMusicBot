@@ -92,7 +92,7 @@ class music_cog(commands.Cog):
             )
         else:
             await ctx.send("Song added to the queue")
-            self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=["thumbnail"], user="default_system")
+            self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
             if self.cdb.current_song is None:
                 await self.play_music(ctx)
 
