@@ -9,6 +9,9 @@ __pycache__/
 # testing file
 test.ipynb
 
+# log files
+*.log
+
 # C extensions
 *.so
 

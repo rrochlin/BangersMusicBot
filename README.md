@@ -9,6 +9,11 @@ The system you use will need to have mariaDB installed then you need to download
 * `sudo apt-get install -y libmariadb-dev`
 * `pip3 install mariadb==1.0.11`
 
+## Grabbing Logs
+`scp raspi@raspberrypi:/home/raspi/logs/BangersMusicBot.log python/BangersMusicBot.log`
+
+## Pushing Web.Config to raspi
+`scp python/Web.config raspi@raspberrypi:/home/raspi/Documents/BangersMusicBot/python/Web.config`
 
 ## managing services
 sudo systemctl restart BangersMusicService.service

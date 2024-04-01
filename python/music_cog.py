@@ -33,13 +33,14 @@ class music_cog(commands.Cog):
     async def search_yt(self, item) -> dict:
         with YoutubeDL(self.YDL_OPTIONS) as ydl:
             try:
+                # blocking code
                 if "http" in item:
-                    info = await ydl.extract_info(item, download=False)
+                    info = ydl.extract_info(item, download=False)
                 else:
-                    info = await ydl.extract_info("ytsearch:%s" % item, download=False)["entries"][0]
+                    info = ydl.extract_info("ytsearch:%s" % item, download=False)["entries"][0]
             except Exception as e:
                 self.logger.error(e)
-                return False
+                return {}
             source = next((item['url'] for item in info["formats"] if 'asr' in item.keys()), None)
         return {
             "source": source,
@@ -90,7 +91,7 @@ class music_cog(commands.Cog):
         else:
             await self.vc.move_to(ctx.author.voice.channel)
         song = await self.search_yt(query)
-        if song is False:
+        if song is {}:
             await ctx.send(
                 "Could not download the song. Incorrect format try another keyword or url. This could be due to playlist or a livestream format."
             )
