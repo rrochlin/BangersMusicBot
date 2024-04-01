@@ -19,7 +19,7 @@ class music_cog(commands.Cog):
             "options": "-vn",
         }
         self.vc: discord.guild.VocalGuildChannel = None
-        root = logging.getLogger()
+        root = logging.getLogger(__name__)
         root.setLevel(logging.DEBUG)
 
         handler = logging.StreamHandler(sys.stdout)

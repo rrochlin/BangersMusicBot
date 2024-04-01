@@ -3,6 +3,8 @@ from configparser import ConfigParser
 from discord.ext import commands
 from music_cog import music_cog
 import asyncio
+import sys
+import logging
 
 intents = discord.Intents(
     messages=True, guilds=True, message_content=True, voice_states=True
@@ -15,6 +17,14 @@ async def main():
 
 
 if __name__ == "__main__":
+    root = logging.getLogger(__name__)
+    root.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    root.addHandler(handler)
+
     asyncio.run(main())
     config = ConfigParser()
     config.read("Web.config")
