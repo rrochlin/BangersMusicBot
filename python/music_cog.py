@@ -30,15 +30,15 @@ class music_cog(commands.Cog):
         self.logger = root
 
     # searching the item on youtube
-    def search_yt(self, item):
+    async def search_yt(self, item) -> dict:
         with YoutubeDL(self.YDL_OPTIONS) as ydl:
             try:
                 if "http" in item:
-                    info = ydl.extract_info(item, download=False)
+                    info = await ydl.extract_info(item, download=False)
                 else:
-                    info = ydl.extract_info("ytsearch:%s" % item, download=False)["entries"][0]
+                    info = await ydl.extract_info("ytsearch:%s" % item, download=False)["entries"][0]
             except Exception as e:
-                print(e)
+                self.logger.error(e)
                 return False
             source = next((item['url'] for item in info["formats"] if 'asr' in item.keys()), None)
         return {
@@ -48,8 +48,9 @@ class music_cog(commands.Cog):
             "song_url": rf"https://www.youtube.com/watch?v={info['id']}"
         }
 
-    def play_next(self):
+    def play_next(self) -> None:
         try:
+            self.logger.info("just popped song from play_next")
             self.cdb.pop_song()
             m_url = self.cdb.current_song.source
             self.vc.play(
@@ -62,8 +63,9 @@ class music_cog(commands.Cog):
             self.logger.error(f"error playing next song {e}")
 
     # infinite loop checking
-    async def play_music(self, ctx: commands.Context):
+    async def play_music(self, ctx: commands.Context) -> None:
         self.cdb.pop_song()
+        self.logger.info("just popped song from play_music")
         if self.cdb.current_song is None:
             return
         m_url = self.cdb.current_song.source
@@ -78,7 +80,7 @@ class music_cog(commands.Cog):
         await ctx.send(f"Now playing: {self.cdb.current_song.title}")
 
     @commands.command(name="p", help="Plays a selected song from youtube")
-    async def p(self, ctx: commands.Context, *args):
+    async def p(self, ctx: commands.Context, *args) -> None:
         query = " ".join(args)
         if ctx.author.voice.channel is None:
             await ctx.send("Connect to a voice channel!")
@@ -87,7 +89,7 @@ class music_cog(commands.Cog):
             self.vc = await ctx.author.voice.channel.connect()
         else:
             await self.vc.move_to(ctx.author.voice.channel)
-        song = self.search_yt(query)
+        song = await self.search_yt(query)
         if song is False:
             await ctx.send(
                 "Could not download the song. Incorrect format try another keyword or url. This could be due to playlist or a livestream format."
