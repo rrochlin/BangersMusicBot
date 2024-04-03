@@ -38,7 +38,7 @@ class music_cog(commands.Cog):
                 if "http" in item:
                     info = await loop.run_in_executor(None, lambda: ydl.extract_info(item, download=False))
                 else:
-                    info = await loop.run_in_executor(None, lambda: ydl.extract_info("ytsearch:%s" % item, download=False))["entries"][0]
+                    info = (await loop.run_in_executor(None, lambda: ydl.extract_info("ytsearch:%s" % item, download=False)))["entries"][0]
             except Exception as e:
                 self.logger.error(e)
                 return {}
