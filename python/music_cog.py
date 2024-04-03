@@ -33,11 +33,12 @@ class music_cog(commands.Cog):
     async def search_yt(self, item) -> dict:
         with YoutubeDL(self.YDL_OPTIONS) as ydl:
             try:
+                loop = asyncio.get_event_loop()
                 # blocking code
                 if "http" in item:
-                    info = ydl.extract_info(item, download=False)
+                    info = await loop.run_in_executor(None, lambda: ydl.extract_info(item, download=False))
                 else:
-                    info = ydl.extract_info("ytsearch:%s" % item, download=False)["entries"][0]
+                    info = await loop.run_in_executor(None, lambda: ydl.extract_info("ytsearch:%s" % item, download=False))["entries"][0]
             except Exception as e:
                 self.logger.error(e)
                 return {}
