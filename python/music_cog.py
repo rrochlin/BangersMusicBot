@@ -51,8 +51,8 @@ class music_cog(commands.Cog):
 
     def play_next(self) -> None:
         try:
-            self.logger.info("just popped song from play_next")
             self.cdb.pop_song()
+            self.logger.info(f"just popped song from play_next {self.cdb.current_song}")
             m_url = self.cdb.current_song.source
             self.vc.play(
                 discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
@@ -66,7 +66,7 @@ class music_cog(commands.Cog):
     # infinite loop checking
     async def play_music(self, ctx: commands.Context) -> None:
         self.cdb.pop_song()
-        self.logger.info("just popped song from play_music")
+        self.logger.info(f"just popped song from play_music {self.cdb.current_song}")
         if self.cdb.current_song is None:
             return
         m_url = self.cdb.current_song.source
@@ -96,7 +96,7 @@ class music_cog(commands.Cog):
                 "Could not download the song. Incorrect format try another keyword or url. This could be due to playlist or a livestream format."
             )
             return
-        await ctx.send("Song added to the queue")
+        await ctx.send(f"Song added to the queue\n{song['song_url']}")
         self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
         self.logger.info(f"currently playing: {self.cdb.current_song}")
         if self.cdb.current_song is None:
