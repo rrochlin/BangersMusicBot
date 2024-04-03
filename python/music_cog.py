@@ -70,7 +70,7 @@ class music_cog(commands.Cog):
             discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
             after=lambda _: self.play_next(),
         )
-        await ctx.send(f"Now playing: {self.cdb.current_song.title}")
+        await ctx.send(f"Now playing: {self.cdb.current_song.url}")
 
     @commands.command(name="p", help="Plays a selected song from youtube")
     async def p(self, ctx: commands.Context, *args) -> None:
@@ -89,7 +89,7 @@ class music_cog(commands.Cog):
             )
             return
         self.logger.debug(song)
-        await ctx.send(f"Song added to the queue\n{song['song_url']}")
+        await ctx.send("Song added to the queue")
         self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
         self.logger.debug(f"currently playing: {self.cdb.current_song}")
         if self.cdb.current_song is None:

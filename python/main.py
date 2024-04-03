@@ -18,6 +18,7 @@ async def main():
 
 if __name__ == "__main__":
     root = logging.getLogger(__name__)
+    root.propagate = True
     root.setLevel(logging.DEBUG)
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
