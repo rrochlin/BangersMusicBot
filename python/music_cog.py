@@ -98,7 +98,7 @@ class music_cog(commands.Cog):
         self.logger.debug(song)
         await ctx.send("Song added to the queue")
         self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
-        self.logger.debug(f"currently playing: {self.cdb.current_song}")
+        self.logger.debug(f"currently playing: {self.cdb.current_song.title}")
         if self.cdb.current_song is None:
             await self.play_music(ctx)
 
@@ -112,6 +112,7 @@ class music_cog(commands.Cog):
 
     @commands.command(name="skip", help="Skips the current song being played")
     async def skip(self, ctx: commands.Context):
+        self.logger.debug("skip command issued")
         if self.vc.is_connected():
             self.vc.stop()
             # play next in the queue
@@ -119,11 +120,13 @@ class music_cog(commands.Cog):
 
     @commands.command(name="stop", help="Stop music")
     async def stop(self, ctx: commands.Context):
+        self.logger.debug("stop command issued")
         if self.vc.is_connected():
             self.vc.stop()
 
     @commands.command(name="clear queue", help="Clears current songs in queue")
     async def clear_q(self, ctx: commands.Context):
+        self.logger.debug("clear command issued")
         while self.cdb.current_song is not None:
             self.cdb.pop_song()
 
