@@ -5,7 +5,6 @@ from yt_dlp import YoutubeDL
 from cdb_handler import cdb_handler
 from sqlalchemy.orm.exc import NoResultFound
 import logging
-import sys
 
 
 class music_cog(commands.Cog):
@@ -19,15 +18,7 @@ class music_cog(commands.Cog):
             "options": "-vn",
         }
         self.vc: discord.guild.VocalGuildChannel = None
-        root = logging.getLogger(__name__)
-        root.setLevel(logging.DEBUG)
-
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        root.addHandler(handler)
-        self.logger = root
+        self.logger = logging.getLogger(__name__)
 
     # searching the item on youtube
     async def search_yt(self, item) -> dict:
@@ -53,7 +44,7 @@ class music_cog(commands.Cog):
     def play_next(self) -> None:
         try:
             self.cdb.pop_song()
-            self.logger.info(f"just popped song from play_next {self.cdb.current_song}")
+            self.logger.debug(f"just popped song from play_next {self.cdb.current_song.title}")
             m_url = self.cdb.current_song.source
             self.vc.play(
                 discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
@@ -67,7 +58,7 @@ class music_cog(commands.Cog):
     # infinite loop checking
     async def play_music(self, ctx: commands.Context) -> None:
         self.cdb.pop_song()
-        self.logger.info(f"just popped song from play_music {self.cdb.current_song}")
+        self.logger.debug(f"just popped song from play_music {self.cdb.current_song.title}")
         if self.cdb.current_song is None:
             return
         m_url = self.cdb.current_song.source
@@ -97,10 +88,10 @@ class music_cog(commands.Cog):
                 "Could not download the song. Incorrect format try another keyword or url. This could be due to playlist or a livestream format."
             )
             return
-        self.logger.info(song)
+        self.logger.debug(song)
         await ctx.send(f"Song added to the queue\n{song['song_url']}")
         self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
-        self.logger.info(f"currently playing: {self.cdb.current_song}")
+        self.logger.debug(f"currently playing: {self.cdb.current_song}")
         if self.cdb.current_song is None:
             await self.play_music(ctx)
 
