@@ -18,7 +18,7 @@ class music_cog(commands.Cog):
             "options": "-vn",
         }
         self.vc: discord.guild.VocalGuildChannel = None
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger()
 
     # searching the item on youtube
     async def search_yt(self, item) -> dict:
