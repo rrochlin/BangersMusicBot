@@ -5,7 +5,7 @@ from yt_dlp import YoutubeDL
 from cdb_handler import cdb_handler
 from sqlalchemy.orm.exc import NoResultFound
 import logging
-
+import sys
 
 class music_cog(commands.Cog):
     def __init__(self, bot):
@@ -18,7 +18,14 @@ class music_cog(commands.Cog):
             "options": "-vn",
         }
         self.vc: discord.guild.VocalGuildChannel = None
-        self.logger = logging.getLogger()
+        root = logging.getLogger(__name__)
+        root.setLevel(logging.DEBUG)
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        root.addHandler(handler)
+        self.logger = root
 
     # searching the item on youtube
     async def search_yt(self, item) -> dict:

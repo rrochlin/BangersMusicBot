@@ -12,7 +12,6 @@ intents = discord.Intents(
 bot = commands.Bot(command_prefix="-", intents=intents)
 
 root = logging.getLogger(__name__)
-root.propagate = True
 root.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
