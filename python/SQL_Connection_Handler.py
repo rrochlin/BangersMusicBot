@@ -16,7 +16,7 @@ class SQL_Connection_Handler:
         self.conn = mariadb.connect(
             user=config["SECRETS"]["sql_username"],
             password=config["SECRETS"]["sql_password"],
-            host="localhost",
+            host="raspberrypi.local",
         )
         self.conn.auto_reconnect = True
         self.cursor = self.conn.cursor()
