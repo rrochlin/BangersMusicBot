@@ -7,6 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 import logging
 import sys
 
+
 class music_cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -81,6 +82,7 @@ class music_cog(commands.Cog):
 
     @commands.command(name="p", help="Plays a selected song from youtube")
     async def p(self, ctx: commands.Context, *args) -> None:
+        self.logger.debug("play called")
         query = " ".join(args)
         if ctx.author.voice.channel is None:
             await ctx.send("Connect to a voice channel!")
@@ -98,7 +100,7 @@ class music_cog(commands.Cog):
         self.logger.debug(song)
         await ctx.send("Song added to the queue")
         self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
-        self.logger.debug(f"currently playing: {self.cdb.current_song.title}")
+        self.logger.debug(f"currently playing: {self.cdb.current_song if hasattr(self.cdb.current_song, 'title') else None }")
         if self.cdb.current_song is None:
             await self.play_music(ctx)
 
