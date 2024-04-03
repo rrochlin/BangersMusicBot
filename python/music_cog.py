@@ -97,6 +97,7 @@ class music_cog(commands.Cog):
                 "Could not download the song. Incorrect format try another keyword or url. This could be due to playlist or a livestream format."
             )
             return
+        self.logger.info(song)
         await ctx.send(f"Song added to the queue\n{song['song_url']}")
         self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
         self.logger.info(f"currently playing: {self.cdb.current_song}")
