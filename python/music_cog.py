@@ -65,19 +65,11 @@ class music_cog(commands.Cog):
 
     # infinite loop checking
     async def play_music(self, ctx: commands.Context) -> None:
-        self.cdb.pop_song()
-        self.logger.debug(f"just popped song from play_music {self.cdb.current_song.title}")
-        if self.cdb.current_song is None:
-            return
-        m_url = self.cdb.current_song.source
         if (not self.vc.is_connected() or self.vc is None):
             self.vc = await ctx.author.voice.channel.connect()
         else:
             await self.vc.move_to(ctx.author.voice.channel)
-        self.vc.play(
-            discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
-            after=lambda _: self.play_next(),
-        )
+        self.play_next()
         await ctx.send(f"Now playing: {self.cdb.current_song.url}")
 
     @commands.command(name="p", help="Plays a selected song from youtube")
@@ -98,9 +90,9 @@ class music_cog(commands.Cog):
             )
             return
         self.logger.debug(song)
-        await ctx.send("Song added to the queue")
+        await ctx.send(f"Song added to the queue {song['title']}")
         self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
-        self.logger.debug(f"currently playing: {self.cdb.current_song if hasattr(self.cdb.current_song, 'title') else None }")
+        self.logger.debug(f"currently playing: {self.cdb.current_song.title if hasattr(self.cdb.current_song, 'title') else None }")
         if self.cdb.current_song is None:
             await self.play_music(ctx)
 
