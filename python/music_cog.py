@@ -56,7 +56,7 @@ class music_cog(commands.Cog):
             m_url = self.cdb.current_song.source
             self.vc.play(
                 discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
-                after=lambda e: self.play_next(e),
+                after=lambda e: self.play_next(),
             )
         except NoResultFound:
             return
