@@ -121,6 +121,7 @@ class music_cog(commands.Cog):
         self.logger.debug("clear command issued")
         while self.cdb.current_song is not None:
             self.cdb.pop_song()
+        await ctx.send("queue cleared")
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
