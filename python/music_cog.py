@@ -28,7 +28,7 @@ class music_cog(commands.Cog):
         self.logger: logging.Logger = root
 
     # searching the item on youtube
-    async def search_yt(self, item) -> dict:
+    async def search_yt(self, item: str) -> dict:
         with YoutubeDL(self.YDL_OPTIONS) as ydl:
             try:
                 loop = asyncio.get_event_loop()
@@ -92,7 +92,7 @@ class music_cog(commands.Cog):
         await ctx.send(f"Song added to the queue {song['title']}")
         self.cdb.queue_song(song_title=song["title"], song_url=song["song_url"], source=song["source"], thumbnail=song["thumbnail"], user="default_system")
         self.logger.debug(f"currently playing: {self.cdb.current_song.title if hasattr(self.cdb.current_song, 'title') else None }")
-        if self.cdb.current_song is None:
+        if self.vc.is_playing() is False:
             await self.play_music(ctx)
 
     @commands.command(name="queue", help="Displays the current songs in queue")
