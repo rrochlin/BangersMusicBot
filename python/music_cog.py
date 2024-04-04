@@ -49,7 +49,7 @@ class music_cog(commands.Cog):
             "song_url": rf"https://www.youtube.com/watch?v={info['id']}"
         }
 
-    def play_next(self, error: Exception) -> None:
+    def play_next(self) -> None:
         try:
             self.cdb.pop_song()
             self.logger.debug(f"just popped song from play_next {self.cdb.current_song.title}")
