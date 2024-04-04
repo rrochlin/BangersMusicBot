@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy_cockroachdb import run_transaction
 from sqlalchemy.orm.exc import NoResultFound
 from typing import List
-import sys
+# import sys
 
 
 class cdb_handler:
