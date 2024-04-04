@@ -18,7 +18,7 @@ class music_cog(commands.Cog):
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
             "options": "-vn",
         }
-        self.vc: discord.guild.VocalGuildChannel = None
+        self.vc: discord.VoiceClient = None
         root = logging.getLogger(__name__)
         root.setLevel(logging.DEBUG)
         handler = logging.StreamHandler(sys.stdout)
