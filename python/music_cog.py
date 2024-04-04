@@ -9,10 +9,10 @@ import sys
 
 
 class music_cog(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: commands.Bot):
+        self.bot: commands.Bot = bot
         # all the music related stuff
-        self.cdb = cdb_handler()
+        self.cdb: cdb_handler = cdb_handler()
         self.YDL_OPTIONS = {"format": "bestaudio", "noplaylist": "True"}
         self.FFMPEG_OPTIONS = {
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
@@ -25,7 +25,7 @@ class music_cog(commands.Cog):
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         root.addHandler(handler)
-        self.logger = root
+        self.logger: logging.Logger = root
 
     # searching the item on youtube
     async def search_yt(self, item) -> dict:
