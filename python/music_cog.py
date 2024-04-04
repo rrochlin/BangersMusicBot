@@ -116,7 +116,7 @@ class music_cog(commands.Cog):
         if self.vc.is_connected():
             self.vc.stop()
 
-    @commands.command(name="clear queue", help="Clears current songs in queue")
+    @commands.command(name="clear", help="Clears current songs in queue")
     async def clear_q(self, ctx: commands.Context):
         self.logger.debug("clear command issued")
         while self.cdb.current_song is not None:
