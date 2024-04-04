@@ -32,14 +32,15 @@ class cdb_handler:
         self.conn.auto_reconnect = True
         self.cursor = self.engine.raw_connection().cursor()
 
-        root = logging.getLogger(__name__)
-        root.setLevel(logging.DEBUG)
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        root.addHandler(handler)
-        self.logger = root
+        # root = logging.getLogger(__name__)
+        # handler = logging.StreamHandler(sys.stdout)
+        # handler.setLevel(logging.DEBUG)
+        # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        # handler.setFormatter(formatter)
+        # root.addHandler(handler)
+        # self.logger = root
+        self.logger = logging.getLogger(__name__)
+
         self.current_song = None
         self.__current_queue__ = None
 
