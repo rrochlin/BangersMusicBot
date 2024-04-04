@@ -49,14 +49,14 @@ class music_cog(commands.Cog):
             "song_url": rf"https://www.youtube.com/watch?v={info['id']}"
         }
 
-    def play_next(self) -> None:
+    def play_next(self, error: Exception) -> None:
         try:
             self.cdb.pop_song()
             self.logger.debug(f"just popped song from play_next {self.cdb.current_song.title}")
             m_url = self.cdb.current_song.source
             self.vc.play(
                 discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
-                after=lambda e: self.play_next(),
+                after=lambda e: self.play_next(e),
             )
         except NoResultFound:
             return
@@ -109,8 +109,6 @@ class music_cog(commands.Cog):
         self.logger.debug("skip command issued")
         if self.vc.is_connected():
             self.vc.stop()
-            # play next in the queue
-            await self.play_music(ctx)
 
     @commands.command(name="stop", help="Stop music")
     async def stop(self, ctx: commands.Context):
