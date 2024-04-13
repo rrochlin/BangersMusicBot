@@ -25,13 +25,6 @@ root.addHandler(handler)
 async def main():
     await bot.add_cog(music_cog(bot))
 
-asyncio.run(main())
-config = ConfigParser()
-config.read("Web.config")
-TOKEN = config["SECRETS"]["TOKEN"]
-thread = Thread(target=bot.run, args=(TOKEN,))
-thread.start()
-
 
 @get("/")
 async def hello_world() -> str:
@@ -47,5 +40,12 @@ async def skip() -> str:
         return str(cog.cdb.current_song)
     except Exception as e:
         root.error(e)
+
+asyncio.run(main())
+config = ConfigParser()
+config.read("Web.config")
+TOKEN = config["SECRETS"]["TOKEN"]
+thread = Thread(target=bot.run, args=(TOKEN,), daemon=True)
+thread.start()
 
 app = Litestar([hello_world, skip])
