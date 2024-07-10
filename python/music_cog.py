@@ -82,6 +82,7 @@ class music_cog(commands.Cog):
             self.vc = await ctx.author.voice.channel.connect()
         else:
             await self.vc.move_to(ctx.author.voice.channel)
+
         song = await self.search_yt(query)
         if song is {}:
             await ctx.send(
@@ -113,7 +114,7 @@ class music_cog(commands.Cog):
     async def stop(self, ctx: commands.Context):
         self.logger.debug("stop command issued")
         if self.vc.is_connected():
-            self.vc.stop()
+            self.vc.disconnect()
 
     @commands.command(name="clear", help="Clears current songs in queue")
     async def clear_q(self, ctx: commands.Context):
