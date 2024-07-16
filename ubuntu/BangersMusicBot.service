@@ -1,0 +1,13 @@
+[Unit]
+Description=Ticketing bot for the Bangers Disc
+After=network-online.target
+
+[Service]
+ExecStart=/bin/bash -c '/home/bert/repos/BangersMusicBot/python/run_bot.sh > /home/bert/logs/BangersMusicBot.log 2>&1'
+WorkingDirectory=/home/bert/repos/BangersMusicBot
+User=bert
+Group=bert
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

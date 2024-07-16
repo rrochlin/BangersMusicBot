@@ -10,16 +10,16 @@ The system you use will need to have mariaDB installed then you need to download
 * `pip3 install mariadb==1.0.11`
 
 ## Grabbing Logs
-`scp raspi@raspberrypi:/home/raspi/logs/BangersMusicBot.log python/BangersMusicBot.log`
+```scp raspi@raspberrypi:/home/raspi/logs/BangersMusicBot.log python/BangersMusicBot.log```
 
 ## Pushing Web.Config to raspi
-`scp python/Web.config raspi@raspberrypi:/home/raspi/Documents/BangersMusicBot/python/Web.config`
+```scp python/Web.config raspi@raspberrypi:/home/raspi/Documents/BangersMusicBot/python/Web.config```
 
 ## managing services
-sudo systemctl restart BangersMusicService.service
+```sudo systemctl restart BangersMusicService.service```
 
 ## configuring MariaDB to remote connections
-* [documentation](https://mariadb.com/kb/en/configuring-mariadb-for-remote-client-access/).
+* [documentation](https://mariadb.com/kb/en/configuring-mariadb-for-remote-client-access/)
 * need to open port 3306
 * configure user account to allow conections from LAN
 

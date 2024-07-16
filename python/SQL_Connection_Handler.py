@@ -3,6 +3,9 @@ import configparser
 import os
 import logging
 import sys
+"""
+Unused in new setup
+"""
 
 
 class SQL_Connection_Handler:
