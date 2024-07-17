@@ -7,7 +7,6 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy_cockroachdb import run_transaction
 from sqlalchemy.orm.exc import NoResultFound
 from typing import List
-import sys
 
 
 class cdb_handler:
@@ -32,14 +31,8 @@ class cdb_handler:
         self.conn.auto_reconnect = True
         self.cursor = self.engine.raw_connection().cursor()
 
-        root = logging.getLogger(__name__)
-        root.setLevel(logging.DEBUG)
-        handler = logging.StreamHandler(sys.stdout)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        root.addHandler(handler)
-        self.logger = root
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
 
         self.current_song = None
         self.__current_queue__ = None
