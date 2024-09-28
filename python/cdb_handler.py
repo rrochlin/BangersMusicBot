@@ -2,7 +2,7 @@ import configparser
 import os
 import logging
 from sqlalchemy import create_engine, URL
-from models import Song, Queue, User
+from models import Song, Queue, User, PlaylistPointer
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy_cockroachdb import run_transaction
 from sqlalchemy.orm.exc import NoResultFound
@@ -50,9 +50,9 @@ class cdb_handler:
             self.logger.error(sql)
             self.logger.error(e)
 
-    def pop_song(self) -> None:
+    def next_song(self) -> None:
         self.logger.info("grabbing song from queue")
-        run_transaction(sessionmaker(bind=self.engine), lambda s: self.__pop_song__(s))
+        run_transaction(sessionmaker(bind=self.engine), lambda s: self.__next_song__(s))
         self.logger.info(f"next song is {self.current_song.title}")
 
     def queue_song(self, song_title: str, song_url: str, source: str, thumbnail: str, user: str) -> None:
@@ -69,23 +69,33 @@ class cdb_handler:
         pass
 
     def __fetch_queue__(self, session: Session) -> None:
-        try:
-            current_q = session.query(Queue).all()
+        old_song = self.__get_pointer__(session)
+        current_q = session.query(Queue).order_by(Queue.id).where(Queue.id > old_song.id)
+        if current_q:
             self.__current_queue__ = [q.title for q in current_q]
-        except NoResultFound:
+        else:
             self.__current_queue__ = None
 
-    def __pop_song__(self, session: Session) -> None:
+    def __next_song__(self, session: Session) -> None:
         # will raise NoResultFound if theres no songs in the queue
-        try:
-            popped = session.query(Queue).order_by(Queue.id).first()
-        except NoResultFound:
+        self.logger.debug("getting next song")
+        pp = self.__get_pointer__(session)
+        self.logger.debug(f"retrieved pointer {pp}")
+        new_song = session.query(Queue).order_by(Queue.id).where(Queue.id > pp.id).first()
+        self.logger.debug(f"retrieved next song {new_song}")
+        if not new_song:
             self.current_song = None
             raise NoResultFound
-        session.delete(popped)
-        song = Song(title=popped.title, url=popped.url, source=popped.source, thumbnail=popped.thumbnail, createdById=popped.createdById)
+        new_pp = PlaylistPointer.from_queue(new_song)
+        self.logger.debug(f"creating new pointer {new_pp}")
+        try:
+            session.delete(pp)
+        except Exception as e:
+            self.logger.error(e)
+        session.add(new_pp)
+        song = Song(title=new_song.title, url=new_song.url, source=new_song.source, thumbnail=new_song.thumbnail, createdById=new_song.createdById)
         session.add(song)
-        self.current_song = Song(title=popped.title, url=popped.url, source=popped.source, thumbnail=popped.thumbnail, createdById=popped.createdById)
+        self.current_song = Song(title=new_song.title, url=new_song.url, source=new_song.source, thumbnail=new_song.thumbnail, createdById=new_song.createdById)
 
     def __queue_song__(self, session: Session, song_title: str, song_url: str, source: str, thumbnail: str, user: str):
         try:
@@ -95,12 +105,24 @@ class cdb_handler:
             return
         session.add(Queue(title=song_title, url=song_url, source=source, thumbnail=thumbnail, createdById=user_id))
 
-    def __get_user__(self, session: Session, username: str) -> str:
+    def __get_user__(self, session: Session, username: str) -> User:
         try:
-            return session.query(User).filter(User.name == username).first()
-        except NoResultFound:
-            session.add(User(name=username))
-            return session.query(User).filter(User.name == username).first()
+            user = session.query(User).filter(User.name == username).first()
+            if not user:
+                self.logger.error("trying to add user to database")
+                session.add(User(name=username))
+                self.logger.error("added user to db")
+                return session.query(User).filter(User.name == username).first()
+            return user
         except Exception as e:
             self.logger.error(f"user creation failed {e}")
             raise Exception(e)
+
+    def __get_pointer__(self, session: Session) -> PlaylistPointer:
+        self.logger.debug("grabbing pointer")
+        pointer = session.query(PlaylistPointer).first()
+        self.logger.debug(f"pointer is {pointer}")
+        if pointer:
+            return pointer
+        else:
+            return PlaylistPointer(id=-1)

@@ -46,6 +46,28 @@ class Queue(Base):
     createdById = Column(String, nullable=False, index=True)
 
 
+class PlaylistPointer(Base):
+    def from_queue(queue: Queue):
+        return PlaylistPointer(
+            id=queue.id,
+            title=queue.title,
+            url=queue.url,
+            source=queue.source,
+            thumbnail=queue.thumbnail,
+            createdAt=queue.createdAt,
+            updatedAt=queue.updatedAt,
+            createdById=queue.createdById
+            )
+    __tablename__ = "PlaylistPointer"
+    id = Column(Integer, nullable=False, primary_key=True)
+    title = Column(String, nullable=False, index=True)
+    url = Column(String, nullable=False, index=True)
+    source = Column(String, nullable=False, index=True)
+    thumbnail = Column(String, nullable=False)
+    createdAt = Column(DateTime, nullable=False, default=datetime.now())
+    updatedAt = Column(DateTime, nullable=False, default=datetime.now())
+    createdById = Column(String, nullable=False, index=True)
+
 # class Session(Base):
 #     __tablename__ = "Session"
 #     id = Column(String, nullable=False, primary_key=True)

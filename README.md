@@ -3,11 +3,15 @@ Music Bot JUST for the Boys AND NO ONE ELSE!
 
 
 ## dependancies
-I added support to store logging info into MariaDB.  
-The system you use will need to have mariaDB installed then you need to download the dependancies
-* `sudo apt-get update -y`
-* `sudo apt-get install -y libmariadb-dev`
-* `pip3 install mariadb==1.0.11`
+### PostgreSQL
+You will need this for cockroachdb
+- `sudo apt-get update -y`
+- `sudo apt install postgresql`
+### FFMPEG
+ffmpeg is used to stream the audio to discord
+- `sudo apt-get update -y`
+- `sudo apt install ffmpeg`
+
 
 ## Grabbing Logs
 ```scp raspi@raspberrypi:/home/raspi/logs/BangersMusicBot.log python/BangersMusicBot.log```

@@ -43,14 +43,16 @@ class music_cog(commands.Cog):
             "song_url": rf"https://www.youtube.com/watch?v={info['id']}"
         }
 
-    def play_next(self) -> None:
+    async def play_next(self, ctx: commands.Context) -> None:
         try:
-            self.cdb.pop_song()
-            self.logger.debug(f"just popped song from play_next {self.cdb.current_song.title}")
+            self.cdb.next_song()
+            self.logger.debug(f"next song is {self.cdb.current_song.title}")
             m_url = self.cdb.current_song.source
+            
+            await ctx.send(f"Now playing: {self.cdb.current_song.url}")
             self.vc.play(
                 discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
-                after=lambda e: self.play_next(),
+                after=lambda e: self.bot.loop.call_soon_threadsafe(asyncio.create_task, self.play_next(ctx)),
             )
         except NoResultFound:
             return
@@ -63,8 +65,7 @@ class music_cog(commands.Cog):
             self.vc = await ctx.author.voice.channel.connect()
         else:
             await self.vc.move_to(ctx.author.voice.channel)
-        self.play_next()
-        await ctx.send(f"Now playing: {self.cdb.current_song.url}")
+        await self.play_next(ctx)
 
     @commands.command(name="p", help="Plays a selected song from youtube")
     async def p(self, ctx: commands.Context, *args) -> None:
@@ -77,7 +78,6 @@ class music_cog(commands.Cog):
             self.vc = await ctx.author.voice.channel.connect()
         else:
             await self.vc.move_to(ctx.author.voice.channel)
-
         song = await self.search_yt(query)
         if song is {}:
             await ctx.send(
@@ -103,7 +103,9 @@ class music_cog(commands.Cog):
     async def skip(self, ctx: commands.Context):
         self.logger.debug("skip command issued")
         if self.vc.is_connected():
+            await ctx.send("skipping")
             self.vc.stop()
+            await self.play_next(ctx)
 
     @commands.command(name="stop", help="Stop music")
     async def stop(self, ctx: commands.Context):
@@ -115,7 +117,7 @@ class music_cog(commands.Cog):
     async def clear_q(self, ctx: commands.Context):
         self.logger.debug("clear command issued")
         while self.cdb.current_song is not None:
-            self.cdb.pop_song()
+            self.cdb.next_song()
         await ctx.send("queue cleared")
 
     @commands.Cog.listener()

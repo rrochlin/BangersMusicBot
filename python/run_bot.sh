@@ -1,4 +1,4 @@
 #!/bin/bash
-source /home/bert/repos/BangersMusicBot/env/bin/activate
-cd /home/bert/repos/BangersMusicBot/python
+cd "$(dirname "$0")"
+source ../env/bin/activate
 litestar run
