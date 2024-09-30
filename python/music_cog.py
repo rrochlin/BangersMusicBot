@@ -42,7 +42,8 @@ class music_cog(commands.Cog):
             # remove the first element as you are currently playing it
             self.music_queue[server].pop(0)
             self.vc[server].play(
-                discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
+                # discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
+                discord.FFmpegOpusAudio(m_url, **self.FFMPEG_OPTIONS),
                 after=lambda e: self.play_next(server),
             )
         else:
@@ -65,7 +66,8 @@ class music_cog(commands.Cog):
                 await self.vc[server].move_to(self.music_queue[server][0][1])
             current = self.music_queue[server].pop(0)
             self.vc[server].play(
-                discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
+                # discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS),
+                discord.FFmpegOpusAudio(m_url, **self.FFMPEG_OPTIONS),
                 after=lambda e: self.play_next(server),
             )
             await ctx.send(f"Now playing: {current[0]['title']}")

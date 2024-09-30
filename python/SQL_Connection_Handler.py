@@ -8,28 +8,31 @@ import sys
 class SQL_Connection_Handler:
 
     def __init__(self):
-        secrets_path = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "Web.config"
-        )
-        config = configparser.ConfigParser()
-        config.read(secrets_path)
-        self.conn = mariadb.connect(
-            user=config["SECRETS"]["sql_username"],
-            password=config["SECRETS"]["sql_password"],
-            host="raspberrypi.local",
-        )
-        self.conn.auto_reconnect = True
-        self.cursor = self.conn.cursor()
+        try:
+            root = logging.getLogger()
+            root.setLevel(logging.DEBUG)
 
-        root = logging.getLogger()
-        root.setLevel(logging.DEBUG)
+            handler = logging.StreamHandler(sys.stdout)
+            handler.setLevel(logging.DEBUG)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            handler.setFormatter(formatter)
+            root.addHandler(handler)
+            self.logger = root
 
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        root.addHandler(handler)
-        self.logger = root
+            secrets_path = os.path.join(
+                os.path.dirname(os.path.realpath(__file__)), "Web.config"
+            )
+            config = configparser.ConfigParser()
+            config.read(secrets_path)
+            self.conn = mariadb.connect(
+                user=config["SECRETS"]["sql_username"],
+                password=config["SECRETS"]["sql_password"],
+                host="raspberrypi.local",
+            )
+            self.conn.auto_reconnect = True
+            self.cursor = self.conn.cursor()
+        except Exception as e:
+            self.logger.error(e)
 
     def song_played(self, song_title: str, song_url: str, user: str = "default") -> None:
         # record the song and user
