@@ -1,8 +1,10 @@
 import asyncio
+from pathlib import Path
+
 import discord
 from discord.ext import commands
-from yt_dlp import YoutubeDL
 from SQL_Connection_Handler import SQL_Connection_Handler
+from yt_dlp import YoutubeDL
 
 
 class music_cog(commands.Cog):
@@ -13,7 +15,11 @@ class music_cog(commands.Cog):
         # music_queue is an object containing keys for different servers and 2d arrays containing [song, channel] for values
         self.music_queue = dict()
         self.sql_handler = SQL_Connection_Handler()
-        self.YDL_OPTIONS = {"format": "bestaudio", "noplaylist": "True"}
+        self.YDL_OPTIONS = {
+            "format": "bestaudio",
+            "noplaylist": "True",
+            "cookiefile": Path(__file__).parent.joinpath("cookies.txt"),
+        }
         self.FFMPEG_OPTIONS = {
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
             "options": "-vn",
@@ -27,11 +33,15 @@ class music_cog(commands.Cog):
                 if "http" in item:
                     info = ydl.extract_info(item, download=False)
                 else:
-                    info = ydl.extract_info("ytsearch:%s" % item, download=False)["entries"][0]
+                    info = ydl.extract_info("ytsearch:%s" % item, download=False)[
+                        "entries"
+                    ][0]
             except Exception as e:
                 print(e)
                 return False
-            source = next((item['url'] for item in info["formats"] if 'asr' in item.keys()), None)
+            source = next(
+                (item["url"] for item in info["formats"] if "asr" in item.keys()), None
+            )
         return {"source": source, "title": info["title"]}
 
     def play_next(self, server):
@@ -89,7 +99,11 @@ class music_cog(commands.Cog):
                 )
             else:
                 await ctx.send("Song added to the queue")
-                self.sql_handler.song_played(song_title=song["title"], song_url=song["source"], user=ctx.author.id)
+                self.sql_handler.song_played(
+                    song_title=song["title"],
+                    song_url=song["source"],
+                    user=ctx.author.id,
+                )
                 if server not in self.music_queue:
                     self.music_queue[server] = []
                 self.music_queue[server].append([song, voice_channel])
